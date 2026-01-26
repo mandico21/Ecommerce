@@ -94,7 +94,7 @@ class PostgresSettings(_Settings):
                 password=quote_plus(password_str),
                 host=values.get("HOST"),
                 port=int(values.get("PORT")),
-                path=f"/{values.get('DATABASE_NAME')}",
+                path=values.get('DATABASE_NAME'),
             )
         )
         return values
