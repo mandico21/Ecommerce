@@ -15,15 +15,15 @@ docker_up:
 
 ## Run development server with reload
 run:
-	uvicorn app.main:create_app --host ${API__HOST:-localhost} --reload --port ${API__PORT:-8000}
+	uvicorn app.main:create_app --host $(API__HOST) --reload --port $(API__PORT) --log-config logging_config.json
 
 ## Run production server with multiple workers
 run-prod:
-	uvicorn app.main:create_app --host ${API__HOST:-0.0.0.0} --port ${API__PORT:-8000} --workers ${API__WORKERS:-4} --no-access-log
+	uvicorn app.main:create_app --host $(API__HOST) --port $(API__PORT) --workers $(API__WORKERS) --no-access-log --log-config logging_config.json
 
 ## Run with gunicorn (recommended for production)
 run-gunicorn:
-	gunicorn app.main:create_app --worker-class uvicorn.workers.UvicornWorker --workers ${API__WORKERS:-4} --bind ${API__HOST:-0.0.0.0}:${API__PORT:-8000} --timeout ${API__REQUEST_TIMEOUT:-30} --graceful-timeout ${API__GRACEFUL_SHUTDOWN_TIMEOUT:-30}
+	gunicorn app.main:create_app --worker-class uvicorn.workers.UvicornWorker --workers $(API__WORKERS) --bind $(API__HOST):$(API__PORT) --timeout $(API__REQUEST_TIMEOUT) --graceful-timeout $(API__GRACEFUL_SHUTDOWN_TIMEOUT) --log-config logging_config.json
 
 ## Format all
 fmt: format

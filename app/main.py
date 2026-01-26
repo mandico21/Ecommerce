@@ -72,8 +72,8 @@ def create_app() -> FastAPI:
     application = FastAPI(
         title=settings.API.INSTANCE_APP_NAME,
         debug=settings.API.DEBUG,
-        docs_url="/docs" if settings.API.DEBUG else None,
-        redoc_url="/redoc" if settings.API.DEBUG else None,
+        docs_url="/docs",
+        redoc_url="/redoc",
     )
 
     # Настраиваем Dishka DI
