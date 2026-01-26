@@ -109,6 +109,50 @@ safety:
 bandit:
 	bandit -r ${files_to_check} -x tests
 
+## ═══════════════════════════════════════════════════════════════════════════════
+## Testing
+## ═══════════════════════════════════════════════════════════════════════════════
+
+## Run all tests
+test:
+	pytest
+
+## Run unit tests only
+test-unit:
+	pytest -m unit
+
+## Run integration tests only
+test-integration:
+	pytest -m integration
+
+## Run tests with coverage report
+test-cov:
+	pytest --cov=app --cov-report=term-missing --cov-report=html
+
+## Run tests in verbose mode
+test-v:
+	pytest -vvv
+
+## Run specific test file
+# Usage: make test-file FILE=tests/unit/test_models.py
+test-file:
+	pytest $(FILE) -v
+
+## Run tests matching pattern
+# Usage: make test-k PATTERN="test_create"
+test-k:
+	pytest -k "$(PATTERN)" -v
+
+## Run tests and stop on first failure
+test-x:
+	pytest -x
+
+## Run failed tests from last run
+test-lf:
+	pytest --lf
+
+## ═══════════════════════════════════════════════════════════════════════════════
+
 ## Add trailing comma works only on unix.
 # an error is expected on windows.
 add-trailing-comma:
@@ -126,12 +170,31 @@ clean:
 ## Help
 help:
 	@echo "Available targets:"
-	@echo "  run          - Run development server with reload"
-	@echo "  run-prod     - Run production server with workers"
-	@echo "  run-gunicorn - Run with gunicorn (recommended for production)"
-	@echo "  fmt          - Format code"
-	@echo "  check        - Run all checks"
-	@echo "  migrate      - Apply migrations"
-	@echo "  install      - Install dependencies"
-	@echo "  clean        - Clean pycache"
+	@echo ""
+	@echo "  === Server ==="
+	@echo "  run           - Run development server with reload"
+	@echo "  run-prod      - Run production server with workers"
+	@echo "  run-gunicorn  - Run with gunicorn (recommended for production)"
+	@echo ""
+	@echo "  === Testing ==="
+	@echo "  test          - Run all tests"
+	@echo "  test-unit     - Run unit tests only"
+	@echo "  test-integration - Run integration tests only"
+	@echo "  test-cov      - Run tests with coverage report"
+	@echo "  test-v        - Run tests in verbose mode"
+	@echo "  test-x        - Run tests, stop on first failure"
+	@echo "  test-lf       - Run failed tests from last run"
+	@echo ""
+	@echo "  === Code Quality ==="
+	@echo "  fmt           - Format code"
+	@echo "  check         - Run all checks"
+	@echo ""
+	@echo "  === Database ==="
+	@echo "  migrate       - Apply migrations"
+	@echo "  migrate-rollback - Rollback migrations"
+	@echo "  migrate-list  - List migrations status"
+	@echo ""
+	@echo "  === Other ==="
+	@echo "  install       - Install dependencies"
+	@echo "  clean         - Clean pycache"
 
