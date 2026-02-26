@@ -16,6 +16,7 @@ from app.configuration.providers import (
     ClientProvider,
     ConnectorsProvider,
     RepositoryProvider,
+    RequestContextProvider,
     ServiceProvider,
     SettingsProvider,
 )
@@ -69,6 +70,7 @@ def create_app() -> FastAPI:
         RepositoryProvider(),
         ServiceProvider(),
         ClientProvider(),
+        RequestContextProvider(),
     )
 
     @asynccontextmanager

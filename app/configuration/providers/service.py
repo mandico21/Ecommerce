@@ -13,5 +13,12 @@ class ServiceProvider(Provider):
     scope = Scope.REQUEST
 
     @provide
-    def product_service(self, product_repo: ProductRepo) -> ProductService:
-        return ProductService(product_repository=product_repo)
+    def product_service(
+        self,
+        product_repo: ProductRepo,
+        request_id: str | None,
+    ) -> ProductService:
+        return ProductService(
+            product_repository=product_repo,
+            request_id=request_id,
+        )
