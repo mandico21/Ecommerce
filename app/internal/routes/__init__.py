@@ -4,6 +4,8 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
+from app.internal.routes.product import router as product_router
+
 if TYPE_CHECKING:
     from fastapi import FastAPI
 
@@ -34,20 +36,8 @@ def register_routes(app: "FastAPI") -> None:
         /api/v1/products   - Управление товарами
         ...
     """
-    # TODO: Добавьте свои роутеры здесь
-    # from app.internal.routes.users import router as users_router
-    # app.include_router(
-    #     users_router,
-    #     prefix="/api/v1/users",
-    #     tags=["users"]
-    # )
-
-    # from app.internal.routes.auth import router as auth_router
-    # app.include_router(
-    #     auth_router,
-    #     prefix="/api/v1/auth",
-    #     tags=["auth"]
-    # )
-    pass
-
-
+    app.include_router(
+        product_router,
+        prefix="/api/v1/products",
+        tags=["Product"]
+    )

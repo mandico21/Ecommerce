@@ -7,6 +7,7 @@
     ├── __init__.py
     ├── user.py           # UserService
     ├── auth.py           # AuthService
+    ├── product.py        # ProductService
     └── notification.py   # NotificationService
 
 Пример сервиса:
@@ -24,5 +25,6 @@
 """
 
 # Экспортируйте ваши сервисы здесь:
-# from app.internal.service.user import UserService
-# from app.internal.service.auth import AuthService
+from app.internal.service.product import ProductService
+
+__all__ = ["ProductService"]
