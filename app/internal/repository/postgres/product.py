@@ -1,7 +1,7 @@
 """Репозиторий для работы с продуктами в PostgreSQL."""
 from app.internal.models.product.repository import ProductRepositoryResponse
 from app.internal.repository import BaseRepository, with_retry
-from app.internal.repository.postgres import collect_response
+from app.internal.repository.postgres.handlers import collect_response
 from app.pkg.connectors import PostgresConnector
 
 

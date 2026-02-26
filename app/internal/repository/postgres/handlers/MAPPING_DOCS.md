@@ -22,8 +22,9 @@
 ```python
 from uuid import UUID
 from app.internal.repository.base import BaseRepository
-from app.internal.repository.postgres.mapping import collect_response
+from app.internal.repository.postgres.handlers.mapping import collect_response
 from app.internal.models.user import UserResponse
+
 
 class UserRepository(BaseRepository):
     @collect_response

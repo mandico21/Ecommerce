@@ -23,8 +23,7 @@
                 raise ValueError("Email уже существует")
             return await self._user_repo.create(email=email, name=name)
 """
+__all__ = ["ProductService", "CartService"]
 
-# Экспортируйте ваши сервисы здесь:
+from app.internal.service.cart import CartService
 from app.internal.service.product import ProductService
-
-__all__ = ["ProductService"]

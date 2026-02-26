@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
+from app.internal.routes.cart import router as cart_router
 from app.internal.routes.product import router as product_router
 
 if TYPE_CHECKING:
@@ -36,8 +37,5 @@ def register_routes(app: "FastAPI") -> None:
         /api/v1/products   - Управление товарами
         ...
     """
-    app.include_router(
-        product_router,
-        prefix="/api/v1/products",
-        tags=["Product"]
-    )
+    app.include_router(product_router, prefix="/api/v1/products", tags=["Product"])
+    app.include_router(cart_router, prefix="/api/v1/cart", tags=["Cart"])

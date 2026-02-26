@@ -7,6 +7,7 @@ from typing import TYPE_CHECKING
 
 from fastapi import Request
 from fastapi.responses import JSONResponse
+from pydantic import ValidationError
 
 from app.internal.pkg.middlewares.request_id import get_request_id
 from app.pkg.logger import get_logger
@@ -102,9 +103,42 @@ async def _handle_unhandled_exception(request: Request, exc: Exception) -> JSONR
     )
 
 
+async def _handle_validation_error(request: Request, exc: ValidationError) -> JSONResponse:
+    """Обработка ошибок валидации Pydantic."""
+    request_id = get_request_id()
+
+    # Формируем детали ошибки
+    errors = []
+    for error in exc.errors():
+        errors.append({
+            "field": ".".join(str(loc) for loc in error["loc"]),
+            "message": error["msg"],
+            "type": error["type"],
+        })
+
+    logger.error(
+        "Ошибка валидации Pydantic: %s | request_id=%s | errors=%s",
+        exc.__class__.__name__,
+        request_id,
+        errors,
+    )
+
+    payload = ErrorPayload(
+        message="Ошибка валидации данных",
+        details={"errors": errors},
+        request_id=request_id,
+    )
+
+    return JSONResponse(
+        status_code=422,
+        content=payload.to_dict(),
+    )
+
+
 def register_exception_handlers(app: "FastAPI") -> None:
     """Регистрация всех обработчиков исключений в FastAPI приложении."""
     # ВАЖНО: Порядок регистрации - от более специфичных к более общим
+    app.add_exception_handler(ValidationError, _handle_validation_error)
     app.add_exception_handler(DependencyError, _handle_dependency_error)
     app.add_exception_handler(AppError, _handle_app_error)
     app.add_exception_handler(Exception, _handle_unhandled_exception)

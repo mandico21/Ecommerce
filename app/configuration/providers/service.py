@@ -4,7 +4,9 @@ from __future__ import annotations
 
 from dishka import Provider, Scope, provide
 
+from app.internal.repository.postgres import CartRepo
 from app.internal.repository.postgres.product import ProductRepo
+from app.internal.service import CartService
 from app.internal.service.product import ProductService
 
 
@@ -20,5 +22,16 @@ class ServiceProvider(Provider):
     ) -> ProductService:
         return ProductService(
             product_repository=product_repo,
+            request_id=request_id,
+        )
+
+    @provide
+    def cart_service(
+        self,
+        cart_repo: CartRepo,
+        request_id: str | None,
+    ) -> CartService:
+        return CartService(
+            cart_repo=cart_repo,
             request_id=request_id,
         )
