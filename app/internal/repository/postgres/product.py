@@ -1,6 +1,5 @@
 """Репозиторий для работы с продуктами в PostgreSQL."""
-
-from app.internal.models.product.response import ProductModelResponse
+from app.internal.models.product.repository import ProductRepositoryResponse
 from app.internal.repository import BaseRepository, with_retry
 from app.internal.repository.postgres import collect_response
 from app.pkg.connectors import PostgresConnector
@@ -22,7 +21,7 @@ class ProductRepo(BaseRepository):
     async def get_product_by_id(
         self,
         product_id: int
-    ) -> ProductModelResponse | None:
+    ) -> ProductRepositoryResponse | None:
         query = """
                 select id, name, description, price, is_available, created_at, updated_at
                 from products

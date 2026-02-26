@@ -1,8 +1,7 @@
-from app.internal.models.product.base import ProductFields
-from app.pkg.models.base import BaseModel
+from app.internal.models.product import BaseProduct, ProductFields
 
 
-class ProductModelResponse(BaseModel):
+class ProductAPIResponse(BaseProduct):
     """Модель для ответа с данными продукта."""
 
     id: ProductFields.ID

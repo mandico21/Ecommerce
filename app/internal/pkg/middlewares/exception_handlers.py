@@ -36,7 +36,7 @@ async def _handle_app_error(request: Request, exc: AppError) -> JSONResponse:
             exc_info=exc.cause,
         )
     else:
-        logger.warning(
+        logger.info(
             "AppError [%s]: %s | request_id=%s",
             exc.__class__.__name__,
             exc.message,
@@ -69,6 +69,7 @@ async def _handle_dependency_error(request: Request, exc: DependencyError) -> JS
 
     payload = ErrorPayload(
         message="Сервис временно недоступен",
+        details=exc.details if exc.expose else None,
         request_id=request_id,
     )
 
@@ -91,6 +92,7 @@ async def _handle_unhandled_exception(request: Request, exc: Exception) -> JSONR
 
     payload = ErrorPayload(
         message="Внутренняя ошибка сервера",
+        details=None,
         request_id=request_id,
     )
 
@@ -102,6 +104,7 @@ async def _handle_unhandled_exception(request: Request, exc: Exception) -> JSONR
 
 def register_exception_handlers(app: "FastAPI") -> None:
     """Регистрация всех обработчиков исключений в FastAPI приложении."""
-    app.add_exception_handler(AppError, _handle_app_error)
+    # ВАЖНО: Порядок регистрации - от более специфичных к более общим
     app.add_exception_handler(DependencyError, _handle_dependency_error)
+    app.add_exception_handler(AppError, _handle_app_error)
     app.add_exception_handler(Exception, _handle_unhandled_exception)
