@@ -1,4 +1,6 @@
 """Репозиторий для работы с продуктами в PostgreSQL."""
+from typing import Any
+
 from app.internal.models.product.repository import ProductRepositoryResponse
 from app.internal.repository import BaseRepository, with_retry
 from app.internal.repository.postgres.handlers import collect_response
@@ -27,4 +29,5 @@ class ProductRepo(BaseRepository):
                 from products
                 where id = %s \
                 """
-        return await self.fetch_one(query, (product_id,))
+        res = await self.fetch_one(query, (product_id,))
+        return res

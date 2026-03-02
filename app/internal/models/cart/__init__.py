@@ -28,6 +28,7 @@ class CartFields:
 
 
 class CartItemsFields:
+    ID = Annotated[int, Field(description="ID элемента корзины", examples=[1])]
     Cart_id = Annotated[UUID, Field(description="ID корзины", examples=["u-u-i-d"])]
     Product_id = Annotated[int, Field(description="ID продукта", examples=[1])]
     Quantity = Annotated[int, Field(description="Количество продукта", examples=[1])]

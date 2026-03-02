@@ -1,4 +1,7 @@
-from app.internal.models.cart.api import CartAPIResponse
+from uuid import UUID
+
+from app.internal.models.cart.api import CartAPIResponse, CartByAPIResponse
+from app.internal.models.cart.repository import ReadCartByIdQuery
 from app.internal.repository.postgres import CartRepo
 from app.pkg.logger import get_logger
 
@@ -25,3 +28,6 @@ class CartService:
             self._request_id,
         )
         return cart.migrate(CartAPIResponse)
+
+    async def get_by_id(self, cart_id: UUID) -> CartByAPIResponse | None:
+        return await self._cart_repo.get_by_id(query=ReadCartByIdQuery(id=cart_id))
