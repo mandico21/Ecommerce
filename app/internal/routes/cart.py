@@ -5,6 +5,7 @@ from dishka import FromDishka
 from dishka.integrations.fastapi import inject
 from fastapi import APIRouter
 
+from app.internal.models.cart import api
 from app.internal.models.cart.api import CartAPIResponse, CartByAPIResponse
 from app.internal.service import CartService
 from app.pkg.logger import get_logger
@@ -35,4 +36,18 @@ async def get_cart_by_id(
     cart_service: Annotated[CartService, FromDishka()]
 ) -> CartByAPIResponse | None:
     """Получить корзину по ID."""
-    return await cart_service.get_by_id(cart_id=cart_id)
+    return await cart_service.get_cart(cart_id=cart_id)
+
+
+@router.post(
+    '/add-product', summary="Добавить продукт в корзину",
+    description="Добавляет продукт в корзину и возвращает обновленную корзину",
+    response_model=CartByAPIResponse
+)
+@inject
+async def add_product_in_cart(
+    request: api.AddProductCartAPIRequest,
+    cart_service: Annotated[CartService, FromDishka()]
+) -> CartByAPIResponse:
+    """Добавить продукт в корзину."""
+    return await cart_service.add_product_in_cart(request=request)

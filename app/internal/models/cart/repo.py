@@ -1,6 +1,19 @@
+__all__ = [
+    # RESPONSE
+    "CartRepositoryResponse",
+    "CartItemRepositoryResponse",
+    "CartByIdRepositoryResponse",
+    "CartItemsRepoResponse",
+    # COMMAND
+    "AddProductCartRepoCommand",
+    # QUERY
+    "ReadCartByIdQuery",
+]
+
 from app.internal.models.cart import BaseCart, CartFields, CartItemsFields, BaseCartItem
 
 
+# RESPONSE
 class CartRepositoryResponse(BaseCart):
     """Модель для ответа с данными корзины."""
 
@@ -23,6 +36,20 @@ class CartByIdRepositoryResponse(CartRepositoryResponse):
     items: list[CartItemRepositoryResponse]
 
 
+class CartItemsRepoResponse(CartByIdRepositoryResponse):
+    """Модель для ответа с данными элементов корзины по ID."""
+
+
+# COMMAND
+class AddProductCartRepoCommand(BaseCart):
+    """Модель для команды на добавление продукта в корзину."""
+
+    cart_id: CartFields.ID
+    product_id: CartItemsFields.Product_id
+    quantity: CartItemsFields.Quantity = 1
+
+
+# QUERY
 class ReadCartByIdQuery(BaseCart):
     """Модель для запроса на получение корзины по ID."""
 

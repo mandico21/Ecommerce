@@ -1,6 +1,18 @@
+__all__ = [
+    # Response
+    "CartAPIResponse",
+    "CartItemsAPIResponse",
+    "CartByAPIResponse",
+    # Request
+    "AddProductCartAPIRequest",
+    # Read
+]
+
+
 from app.internal.models.cart import BaseCart, CartFields, CartItemsFields
 
 
+### RESPONSE
 class CartAPIResponse(BaseCart):
     """Модель для ответа с данными корзины."""
 
@@ -21,3 +33,12 @@ class CartByAPIResponse(CartAPIResponse):
     """Модель для ответа с данными корзины и её элементов."""
 
     items: list[CartItemsAPIResponse]
+
+
+### REQUEST
+class AddProductCartAPIRequest(BaseCart):
+    cart_id: CartFields.ID
+    product_id: CartItemsFields.Product_id
+    quantity: CartItemsFields.Quantity = 1
+
+### READ

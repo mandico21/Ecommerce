@@ -29,9 +29,11 @@ class ServiceProvider(Provider):
     def cart_service(
         self,
         cart_repo: CartRepo,
+        product_service: ProductService,
         request_id: str | None,
     ) -> CartService:
         return CartService(
             cart_repo=cart_repo,
+            product_service=product_service,
             request_id=request_id,
         )

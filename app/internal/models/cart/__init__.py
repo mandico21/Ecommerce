@@ -1,4 +1,9 @@
-__all__ = ["CartFields", "BaseCart", "BaseCartItem", "CartItemsFields"]
+__all__ = [
+    "CartFields",
+    "BaseCart",
+    "BaseCartItem",
+    "CartItemsFields",
+]
 
 from datetime import datetime
 from typing import Annotated
@@ -28,7 +33,7 @@ class CartFields:
 
 
 class CartItemsFields:
-    ID = Annotated[int, Field(description="ID элемента корзины", examples=[1])]
+    ID = Annotated[UUID, Field(description="ID элемента корзины", examples=["u-u-i-d"])]
     Cart_id = Annotated[UUID, Field(description="ID корзины", examples=["u-u-i-d"])]
     Product_id = Annotated[int, Field(description="ID продукта", examples=[1])]
     Quantity = Annotated[int, Field(description="Количество продукта", examples=[1])]

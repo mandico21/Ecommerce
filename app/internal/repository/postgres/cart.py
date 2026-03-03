@@ -1,4 +1,6 @@
-from app.internal.models.cart.repository import (
+from app.internal import models
+from app.internal.models.cart import repo
+from app.internal.models.cart.repo import (
     CartRepositoryResponse, ReadCartByIdQuery,
     CartByIdRepositoryResponse,
 )
@@ -52,3 +54,18 @@ class CartRepo(BaseRepository):
         res = await self.fetch_all(sql, (query.id,))
         logger.info(f"Получена корзина по ID {query.id}: {res}")
         return res[0] if res else None
+
+    async def add_product_in_cart(
+        self,
+        cmd: repo.AddProductCartRepoCommand
+    ) -> int | None:
+        sql = """
+              insert into cart_items (cart_id, product_id, quantity)
+              values (%s, %s, %s)
+              on conflict (cart_id, product_id) do update
+                  set quantity   = cart_items.quantity + EXCLUDED.quantity,
+                      updated_at = NOW()
+              returning id; \
+              """
+        res = await self.fetch_one(sql, (cmd.cart_id, cmd.product_id, cmd.quantity))
+        return res
