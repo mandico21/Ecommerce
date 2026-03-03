@@ -117,6 +117,10 @@ class UserRepository(BaseRepository):
         else:
             order_clause = "created_at DESC"
 
+        # Жёсткая защита от слишком больших запросов.
+        limit = min(max(1, limit), 1000)
+        offset = max(0, offset)
+
         query = f"""
             SELECT id, email, name, created_at, updated_at
             FROM users

@@ -1,8 +1,8 @@
-from app.internal import models
 from app.internal.models.cart import repo
 from app.internal.models.cart.repo import (
-    CartRepositoryResponse, ReadCartByIdQuery,
     CartByIdRepositoryResponse,
+    CartRepositoryResponse,
+    ReadCartByIdQuery,
 )
 from app.internal.repository import BaseRepository
 from app.internal.repository.postgres.handlers import collect_response
@@ -51,9 +51,9 @@ class CartRepo(BaseRepository):
               where c.id = %s
               group by c.id; \
               """
-        res = await self.fetch_all(sql, (query.id,))
-        logger.info(f"Получена корзина по ID {query.id}: {res}")
-        return res[0] if res else None
+        res = await self.fetch_one(sql, (query.id,))
+        logger.debug("Запрошена корзина по ID=%s | found=%s", query.id, bool(res))
+        return res
 
     async def add_product_in_cart(
         self,
@@ -67,5 +67,5 @@ class CartRepo(BaseRepository):
                       updated_at = NOW()
               returning id; \
               """
-        res = await self.fetch_one(sql, (cmd.cart_id, cmd.product_id, cmd.quantity))
-        return res
+        res = await self.fetch_val(sql, (cmd.cart_id, cmd.product_id, cmd.quantity))
+        return int(res) if res is not None else None

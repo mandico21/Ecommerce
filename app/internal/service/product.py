@@ -60,7 +60,11 @@ class ProductService:
         Returns:
             ProductAPIResponse: данные созданного продукта
         """
-        self.__logger.info(f"Создание продукта {request.name} | request_id={self._request_id}")
+        self.__logger.info(
+            "Создание продукта name=%s | request_id=%s",
+            request.name,
+            self._request_id,
+        )
 
         product = await self._product_repository.create(
             cmd=request.migrate(CreateProductRepoCommand)

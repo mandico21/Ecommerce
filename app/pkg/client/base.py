@@ -54,6 +54,18 @@ class HttpResult:
 # ── Вспомогательные функции ──────────────────────────────────────────────
 
 _SENSITIVE = {"authorization", "x-api-key", "proxy-authorization", "x-auth-token", "api-key"}
+_SENSITIVE_QUERY_KEYS = {
+    "token",
+    "access_token",
+    "refresh_token",
+    "api_key",
+    "apikey",
+    "key",
+    "signature",
+    "sig",
+    "password",
+    "secret",
+}
 
 
 def _mask_value_partial(value: str, head: int = 4, tail: int = 4) -> str:
@@ -95,7 +107,14 @@ def _fmt_url(path: str, params: Mapping[str, Any] | None) -> str:
     try:
         from urllib.parse import urlencode
 
-        qs = urlencode(params, doseq=True)
+        masked_params: dict[str, Any] = {}
+        for key, value in params.items():
+            if key.lower() in _SENSITIVE_QUERY_KEYS:
+                masked_params[key] = "***"
+            else:
+                masked_params[key] = value
+
+        qs = urlencode(masked_params, doseq=True)
         sep = "&" if "?" in path else "?"
         return f"{path}{sep}{qs}"
     except Exception:

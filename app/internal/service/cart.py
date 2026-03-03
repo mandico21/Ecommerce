@@ -45,12 +45,16 @@ class CartService:
 
         if not cart:
             self.__logger.warning(
-                f"Корзина не найдена: cart_id={cart_id} | request_id={self._request_id}"
+                "Корзина не найдена: cart_id=%s | request_id=%s",
+                cart_id,
+                self._request_id,
             )
             raise NotFoundError(f"Корзина с ID {cart_id} не найден")
 
         self.__logger.info(
-            f"Корзина успешно получена: cart_id={cart.id} | request_id={self._request_id}"
+            "Корзина успешно получена: cart_id=%s | request_id=%s",
+            cart.id,
+            self._request_id,
         )
         return cart.migrate(api.CartByAPIResponse)
 
@@ -61,16 +65,29 @@ class CartService:
         await self._product_service.get_product(product_id=request.product_id)
 
         await self.get_cart(cart_id=request.cart_id)
-        self.__logger.info(f"{request.migrate(repo.AddProductCartRepoCommand)}")
+        self.__logger.info(
+            "Добавление продукта в корзину: cart_id=%s, product_id=%s, quantity=%s | request_id=%s",
+            request.cart_id,
+            request.product_id,
+            request.quantity,
+            self._request_id,
+        )
         cart_items = await self._repo.add_product_in_cart(
             cmd=request.migrate(repo.AddProductCartRepoCommand),
         )
 
         if not cart_items:
             self.__logger.warning(
-                f"Не удалось добавить продукт в корзину: cart_id={request.cart_id} | request_id={self._request_id}"
+                "Не удалось добавить продукт в корзину: cart_id=%s | request_id=%s",
+                request.cart_id,
+                self._request_id,
             )
             raise NotFoundError(f"Не удалось добавить продукт в корзину с ID {request.cart_id}")
-        self.__logger.info(f"Продукт успешно добавлен в корзину: cart_id={request.cart_id}, product_id={request.product_id} | request_id={self._request_id}")
+        self.__logger.info(
+            "Продукт успешно добавлен в корзину: cart_id=%s, product_id=%s | request_id=%s",
+            request.cart_id,
+            request.product_id,
+            self._request_id,
+        )
         cart = await self.get_cart(cart_id=request.cart_id)
         return cart.migrate(api.CartByAPIResponse)

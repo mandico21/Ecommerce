@@ -5,7 +5,6 @@ from unittest.mock import AsyncMock
 from uuid import uuid4
 
 from app.internal.repository.postgres.user import UserRepository
-from app.pkg.models.base import DependencyError
 
 
 @pytest.mark.unit
@@ -278,3 +277,26 @@ class TestUserRepositoryListMethods:
         # Assert
         assert len(result) == 2
         assert result[0]["email"] == "user1@example.com"
+
+    async def test_list_all_clamps_limit_and_offset(
+        self,
+        repository: UserRepository,
+        mock_postgres_connector: AsyncMock,
+    ):
+        """Тест: list_all ограничивает limit до 1000 и нормализует offset."""
+        mock_cursor = AsyncMock()
+        mock_cursor.fetchall.return_value = []
+
+        mock_conn = AsyncMock()
+        mock_conn.execute.return_value = mock_cursor
+
+        mock_postgres_connector.connect.return_value.__aenter__.return_value = mock_conn
+
+        await repository.list_all(limit=5000, offset=-5)
+
+        _, call_kwargs = mock_conn.execute.call_args
+        assert call_kwargs == {}
+
+        query, params = mock_conn.execute.call_args.args
+        assert "LIMIT %s OFFSET %s" in query
+        assert params == (1000, 0)
