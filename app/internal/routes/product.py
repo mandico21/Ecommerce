@@ -6,7 +6,7 @@ from dishka import FromDishka
 from dishka.integrations.fastapi import inject
 from fastapi import APIRouter
 
-from app.internal.models.product.api import ProductAPIResponse
+from app.internal.models.product.api import ProductAPIResponse, CreateProductAPIRequest
 from app.internal.service.product import ProductService
 from app.pkg.logger import get_logger
 
@@ -32,3 +32,16 @@ async def get_product(
 ) -> ProductAPIResponse:
     """Получить продукт по ID. NotFoundError будет обработана глобальным обработчиком."""
     return await product_service.get_product(product_id)
+
+
+@router.post(
+    '/', response_model=ProductAPIResponse, summary="Создать новый продукт",
+    description="Создает новый продукт и возвращает его данные"
+)
+@inject
+async def create_product(
+    product_data: CreateProductAPIRequest,
+    product_service: Annotated[ProductService, FromDishka()]
+) -> ProductAPIResponse:
+    """Создать новый продукт."""
+    return await product_service.create_product(product_data)

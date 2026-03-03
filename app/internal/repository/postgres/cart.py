@@ -26,7 +26,6 @@ class CartRepo(BaseRepository):
               RETURNING id, created_at, updated_at \
               """
         res = await self.fetch_one(sql)
-        logger.info(f"Новая корзина создана: {res}")
         return res
 
     @collect_response

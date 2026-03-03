@@ -1,7 +1,9 @@
 """Репозиторий для работы с продуктами в PostgreSQL."""
-from typing import Any
 
-from app.internal.models.product.repository import ProductRepositoryResponse
+from app.internal.models.product.repository import (
+    ProductRepositoryResponse,
+    CreateProductRepoCommand,
+)
 from app.internal.repository import BaseRepository, with_retry
 from app.internal.repository.postgres.handlers import collect_response
 from app.pkg.connectors import PostgresConnector
@@ -30,4 +32,14 @@ class ProductRepo(BaseRepository):
                 where id = %s \
                 """
         res = await self.fetch_one(query, (product_id,))
+        return res
+
+    @collect_response
+    async def create(self, cmd: CreateProductRepoCommand) -> ProductRepositoryResponse | None:
+        query = """
+                insert into products (name, description, price, is_available)
+                values (%(name)s, %(description)s, %(price)s, %(is_available)s)
+                returning id, name, description, price, is_available, created_at, updated_at
+                """
+        res = await self.fetch_one(query, cmd.to_dict())
         return res
